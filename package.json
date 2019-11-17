@@ -1,0 +1,16 @@
+{
+  "name": "sheet-trans",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "node ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "fs-extra": "^8.1.0",
+    "xlsx": "^0.15.2"
+  }
+}
