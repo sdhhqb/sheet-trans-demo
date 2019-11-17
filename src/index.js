@@ -54,7 +54,7 @@ function processXlsxFile(filename) {
                     grade = classInfo[2];
                 }
             }
-            if (row[0] && row[0] > 0 && row[0] < 60) {
+            if (row[0] && row[0] > 0 && row[0] < 61) {
                 if (row[1]) {
                     left.push([school, grade, row[1], row[3], fee, row[4]]);
                 }
