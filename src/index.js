@@ -37,9 +37,9 @@ function processXlsxFile(filename) {
         // 检查保费，每个sheet只用检查一次
         jsonSheet.some(function (row) {
             if (typeof row[0] === 'string') {
-                let feeMatch = row[0].match(/保费：\s*(\d+)\s*元\/人/);
+                let feeMatch = row[0].match(/(保费|保险方案)[：:]\s*(\S+)\s*元\/人/);
                 if (feeMatch) {
-                    fee = feeMatch[1];
+                    fee = feeMatch[2];
                     return true;
                 }
             }
