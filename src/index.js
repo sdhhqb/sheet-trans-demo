@@ -45,23 +45,49 @@ function processXlsxFile(filename) {
             }
         });
 
+        // 指示当前遍历到的行是否是需要的行，每次遇到序号1时重新计算。
+        // 正确的表格遇到序号1后，后续会有序号2,3,4,...,30。
+        let validRow = false;
+
+        // 遍历sheet的每一行
         jsonSheet.forEach(function (row, index) {
             // 检查学校和班级，每个sheet可能有多个班级
             if (typeof row[0] === 'string') {
-                let classInfo = row[0].match(/学校：\s*(\S*)\s+班级：\s*(\S*)/);
+                let classInfo = row[0].match(/学校[：:]\s*(\S*)\s+班级[：:]\s*(\S*)/);
                 if (classInfo) {
                     school = classInfo[1];
                     grade = classInfo[2];
                 }
             }
-            if (row[0] && row[0] > 0 && row[0] < 61) {
-                if (row[1]) {
-                    left.push([school, grade, row[1], row[3], fee, row[4]]);
+
+            // 当前行第一列是[1, 30]的序号
+            if (row[0] && row[0] > 0 && row[0] < 31) {
+                // 每次序号第1行时，检测当前小表头是否匹配, '序号', '学生姓名'
+                if (row[0] == 1) {
+                    let titleRow = jsonSheet[index - row[0]];
+                    if (
+                      typeof titleRow[0] === 'string' &&
+                      titleRow[0].indexOf('序号') > -1 &&
+                      typeof titleRow[1] === 'string' &&
+                      titleRow[1].indexOf('学生姓名') > -1
+                    ) {
+                        validRow = true
+                    } else {
+                        validRow = false
+                    }
                 }
-                if (row[6]) {
-                    right.push([school, grade, row[6], row[8], fee, row[9]]);
+
+                if (validRow) {
+                    if (typeof row[1] === 'string' && row[1].trim()) {
+                        left.push([school, grade, row[1], row[3], fee, row[4]]);
+                    }
+                    if (typeof row[6] === 'string' && row[6].trim()) {
+                        right.push([school, grade, row[6], row[8], fee, row[9]]);
+                    }
                 }
             }
+
+            // 每个小表格有30行2列，在第30行时将表格左右两列的数据追加到data数组
             if (row[0] == 30) {
                 data = data.concat(left, right);
                 left = [];
@@ -75,7 +101,7 @@ function processXlsxFile(filename) {
     let wb = XLSX.utils.book_new();
     let ws = XLSX.utils.aoa_to_sheet(data);
     XLSX.utils.book_append_sheet(wb, ws, 'sheet1');
-    XLSX.writeFile(wb, path.resolve(__dirname, `../dist/${outputName}.xlsx`));
-    console.log(`文件处理成功: ${filename}`);
+    XLSX.writeFile(wb, path.resolve(__dirname, `../dist/${outputName}-1.xlsx`));
+    console.log(`文件处理成功: ${outputName}-1.xlsx`);
     console.log('----------------------------------------------------------');
 }
