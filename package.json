@@ -11,6 +11,6 @@
   "license": "ISC",
   "devDependencies": {
     "fs-extra": "^8.1.0",
-    "xlsx": "^0.15.2"
+    "xlsx": "^0.17.0"
   }
 }
